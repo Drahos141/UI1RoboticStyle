@@ -1,5 +1,12 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cloneElement, isValidElement, type ButtonHTMLAttributes, type ReactElement, type ReactNode } from 'react'
+import {
+  cloneElement,
+  isValidElement,
+  type ButtonHTMLAttributes,
+  type MouseEvent,
+  type ReactElement,
+  type ReactNode,
+} from 'react'
 
 import { cn } from '../../lib/utils'
 
@@ -59,13 +66,18 @@ export function Button({
       throw new Error('Button with asChild expects a single valid React element child.')
     }
 
-    const child = children as ReactElement<{ className?: string }>
+    const child = children as ReactElement<{ className?: string; onClick?: (event: MouseEvent<HTMLElement>) => void }>
+    const handleClick = (event: MouseEvent<HTMLElement>) => {
+      child.props.onClick?.(event)
+      props.onClick?.(event as never)
+    }
 
     return (
       cloneElement(child, {
         ...child.props,
         ...props,
         className: cn(classes, child.props.className),
+        onClick: handleClick,
       })
     )
   }

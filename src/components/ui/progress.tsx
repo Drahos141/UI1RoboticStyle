@@ -13,11 +13,11 @@ export function Progress({ className, value, ...props }: ProgressProps) {
   return (
     <div
       className={cn('relative h-2 w-full overflow-hidden rounded-full bg-white/10', className)}
+      {...props}
       role="progressbar"
       aria-valuemax={100}
       aria-valuemin={0}
       aria-valuenow={boundedValue}
-      {...props}
     >
       <div className="h-full rounded-full bg-white transition-all" style={{ width }} />
     </div>
