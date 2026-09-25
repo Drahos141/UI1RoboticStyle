@@ -27,12 +27,22 @@ const buttonVariants = cva(
 )
 
 type SharedProps = {
-  asChild?: boolean
-  children: ReactNode
   className?: string
 } & VariantProps<typeof buttonVariants>
 
-type ButtonProps = SharedProps & ButtonHTMLAttributes<HTMLButtonElement>
+type ButtonAsChildProps = SharedProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    asChild: true
+    children: ReactElement<{ className?: string }>
+  }
+
+type ButtonAsButtonProps = SharedProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    asChild?: false
+    children: ReactNode
+  }
+
+type ButtonProps = ButtonAsChildProps | ButtonAsButtonProps
 
 export function Button({
   asChild = false,
@@ -44,13 +54,17 @@ export function Button({
 }: ButtonProps) {
   const classes = cn(buttonVariants({ size, variant }), className)
 
-  if (asChild && isValidElement(children)) {
+  if (asChild) {
+    if (!isValidElement(children)) {
+      throw new Error('Button with asChild expects a single valid React element child.')
+    }
+
     const child = children as ReactElement<{ className?: string }>
 
     return (
       cloneElement(child, {
-        ...props,
         ...child.props,
+        ...props,
         className: cn(classes, child.props.className),
       })
     )
