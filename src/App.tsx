@@ -180,14 +180,14 @@ function App() {
                   <span className="text-zinc-400">Automation orchestration</span>
                   <span className="font-medium text-white">84%</span>
                 </div>
-                <Progress value={84} />
+                <Progress aria-label="Automation orchestration progress" value={84} />
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Incident visibility</span>
                   <span className="font-medium text-white">92%</span>
                 </div>
-                <Progress value={92} />
+                <Progress aria-label="Incident visibility progress" value={92} />
               </div>
               <div className="rounded-2xl border border-dashed border-white/15 bg-black/50 p-4 text-sm text-zinc-300">
                 Minimal interaction included: visitors can switch report modes below to preview different operational
@@ -266,7 +266,7 @@ function App() {
                     <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                       <p className="text-xs uppercase tracking-[0.24em] text-zinc-500">{stat.label}</p>
                       <p className="mt-3 text-2xl font-semibold text-white">{stat.value}</p>
-                      <Progress className="mt-4" value={stat.progress} />
+                      <Progress className="mt-4" aria-label={stat.label} value={stat.progress} />
                     </div>
                   ))}
                 </div>

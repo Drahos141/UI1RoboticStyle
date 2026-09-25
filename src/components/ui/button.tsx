@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'react'
+import { cloneElement, isValidElement, type ButtonHTMLAttributes, type ReactElement, type ReactNode } from 'react'
 
 import { cn } from '../../lib/utils'
 
@@ -32,11 +32,7 @@ type SharedProps = {
   className?: string
 } & VariantProps<typeof buttonVariants>
 
-type ButtonProps = SharedProps &
-  (
-    | ({ asChild?: false } & ButtonHTMLAttributes<HTMLButtonElement>)
-    | ({ asChild: true } & AnchorHTMLAttributes<HTMLAnchorElement>)
-  )
+type ButtonProps = SharedProps & ButtonHTMLAttributes<HTMLButtonElement>
 
 export function Button({
   asChild = false,
@@ -48,11 +44,15 @@ export function Button({
 }: ButtonProps) {
   const classes = cn(buttonVariants({ size, variant }), className)
 
-  if (asChild) {
+  if (asChild && isValidElement(children)) {
+    const child = children as ReactElement<{ className?: string }>
+
     return (
-      <a className={classes} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}>
-        {children}
-      </a>
+      cloneElement(child, {
+        ...props,
+        ...child.props,
+        className: cn(classes, child.props.className),
+      })
     )
   }
 
