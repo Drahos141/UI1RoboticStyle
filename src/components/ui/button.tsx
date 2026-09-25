@@ -67,15 +67,48 @@ export function Button({
     }
 
     const child = children as ReactElement<{ className?: string; onClick?: (event: MouseEvent<HTMLElement>) => void }>
+    const forwardedProps: Record<string, unknown> = {}
+
+    if (props.id) {
+      forwardedProps.id = props.id
+    }
+
+    if (props.title) {
+      forwardedProps.title = props.title
+    }
+
+    if (props.tabIndex !== undefined) {
+      forwardedProps.tabIndex = props.tabIndex
+    }
+
+    for (const [key, value] of Object.entries(props)) {
+      if (key.startsWith('aria-') || key.startsWith('data-')) {
+        forwardedProps[key] = value
+      }
+    }
+
+    if (props.disabled) {
+      forwardedProps['aria-disabled'] = true
+      forwardedProps.tabIndex = -1
+    }
+
     const handleClick = (event: MouseEvent<HTMLElement>) => {
+      if (props.disabled) {
+        event.preventDefault()
+        return
+      }
+
       child.props.onClick?.(event)
-      props.onClick?.(event as never)
+
+      if (!event.defaultPrevented) {
+        props.onClick?.(event as never)
+      }
     }
 
     return (
       cloneElement(child, {
         ...child.props,
-        ...props,
+        ...forwardedProps,
         className: cn(classes, child.props.className),
         onClick: handleClick,
       })

@@ -174,7 +174,7 @@ function App() {
                   <p className="mt-3 text-3xl font-semibold text-white">Weekly</p>
                 </div>
               </div>
-              <Separator />
+              <Separator decorative />
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-zinc-400">Automation orchestration</span>
