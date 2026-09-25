@@ -1,12 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import {
-  cloneElement,
-  isValidElement,
-  type ButtonHTMLAttributes,
-  type MouseEvent,
-  type ReactElement,
-  type ReactNode,
-} from 'react'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 
 import { cn } from '../../lib/utils'
 
@@ -35,88 +28,63 @@ const buttonVariants = cva(
 
 type SharedProps = {
   className?: string
+  children: ReactNode
 } & VariantProps<typeof buttonVariants>
 
-type ButtonAsChildProps = SharedProps &
-  ButtonHTMLAttributes<HTMLButtonElement> & {
-    asChild: true
-    children: ReactElement<{ className?: string }>
+type ButtonLinkProps = SharedProps &
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
+    disabled?: boolean
+    href: string
   }
 
-type ButtonAsButtonProps = SharedProps &
+type ButtonNativeProps = SharedProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
-    asChild?: false
-    children: ReactNode
+    href?: undefined
   }
 
-type ButtonProps = ButtonAsChildProps | ButtonAsButtonProps
+type ButtonProps = ButtonLinkProps | ButtonNativeProps
 
-export function Button({
-  asChild = false,
-  children,
-  className,
-  size,
-  variant,
-  ...props
-}: ButtonProps) {
+export function Button(props: ButtonProps) {
+  const { children, className, size, variant } = props
   const classes = cn(buttonVariants({ size, variant }), className)
 
-  if (asChild) {
-    if (!isValidElement(children)) {
-      throw new Error('Button with asChild expects a single valid React element child.')
-    }
+  if ('href' in props) {
+    const {
+      children: _children,
+      className: _className,
+      size: _size,
+      variant: _variant,
+      disabled,
+      href,
+      ...anchorProps
+    } = props as ButtonLinkProps
 
-    const child = children as ReactElement<{ className?: string; onClick?: (event: MouseEvent<HTMLElement>) => void }>
-    const forwardedProps: Record<string, unknown> = {}
-
-    if (props.id) {
-      forwardedProps.id = props.id
-    }
-
-    if (props.title) {
-      forwardedProps.title = props.title
-    }
-
-    if (props.tabIndex !== undefined) {
-      forwardedProps.tabIndex = props.tabIndex
-    }
-
-    for (const [key, value] of Object.entries(props)) {
-      if (key.startsWith('aria-') || key.startsWith('data-')) {
-        forwardedProps[key] = value
-      }
-    }
-
-    if (props.disabled) {
-      forwardedProps['aria-disabled'] = true
-      forwardedProps.tabIndex = -1
-    }
-
-    const handleClick = (event: MouseEvent<HTMLElement>) => {
-      if (props.disabled) {
-        event.preventDefault()
-        return
-      }
-
-      child.props.onClick?.(event)
-
-      if (!event.defaultPrevented) {
-        props.onClick?.(event as never)
-      }
+    if (disabled) {
+      return (
+        <span className={cn(classes, 'cursor-not-allowed opacity-50')} aria-disabled="true">
+          {children}
+        </span>
+      )
     }
 
     return (
-      cloneElement(child, {
-        ...child.props,
-        ...forwardedProps,
-        className: cn(classes, child.props.className),
-        onClick: handleClick,
-      })
+      <a className={classes} href={href} {...anchorProps}>
+        {children}
+      </a>
     )
   }
 
+  const {
+    children: _children,
+    className: _className,
+    size: _size,
+    variant: _variant,
+    type = 'button',
+    ...buttonProps
+  } = props as ButtonNativeProps
+
   return (
-    <button className={classes} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}>
+    <button className={classes} type={type} {...buttonProps}>
       {children}
     </button>
   )

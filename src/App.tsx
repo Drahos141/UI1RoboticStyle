@@ -104,8 +104,8 @@ function App() {
               </a>
             ))}
           </nav>
-          <Button asChild size="sm">
-            <a href="#contact">Book briefing</a>
+          <Button href="#contact" size="sm">
+            Book briefing
           </Button>
         </div>
       </header>
@@ -127,14 +127,12 @@ function App() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button asChild>
-                <a href="#reports">
-                  Open command board
-                  <ArrowRight className="size-4" />
-                </a>
+              <Button href="#reports">
+                Open command board
+                <ArrowRight className="size-4" />
               </Button>
-              <Button asChild variant="outline">
-                <a href="#capabilities">View capabilities</a>
+              <Button href="#capabilities" variant="outline">
+                View capabilities
               </Button>
             </div>
             <div className="grid gap-4 pt-4 text-sm text-zinc-300 sm:grid-cols-3">
@@ -359,11 +357,9 @@ function App() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                <Button asChild>
-                  <a href="mailto:hello@ui1roboticstyle.example">hello@ui1roboticstyle.example</a>
-                </Button>
-                <Button asChild variant="outline">
-                  <a href="#overview">Back to top</a>
+                <Button href="mailto:hello@ui1roboticstyle.example">hello@ui1roboticstyle.example</Button>
+                <Button href="#overview" variant="outline">
+                  Back to top
                 </Button>
               </div>
             </CardContent>
